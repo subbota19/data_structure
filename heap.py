@@ -44,7 +44,7 @@ class Heap:
         """this method check has checked heap on order(not array!!!)"""
         bool_values = True
         for target_index in range(len(self.array)):
-            # if block try to invoke IndexError it's means that array with elements doesn't contain their
+
             try:
                 if self.array[target_index] > self.array[2 * target_index + 1] or \
                         self.array[target_index] > self.array[2 * target_index + 2]:
