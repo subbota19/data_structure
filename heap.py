@@ -1,4 +1,6 @@
 import math
+import math
+import random, time
 
 BASE_FOR_LOG = 2
 
@@ -36,6 +38,31 @@ class Heap:
                 self.array[index - 1 + sibling_index] = change_element
             index //= 2
 
+    def action_down(self, index):
+        """this method to move element with getting index on right place  """
+        this_action_with_changing = True
+        # formula which will contain index for next element
+        next_index = index
+
+        while this_action_with_changing and index < len(self.array):
+            this_action_with_changing = False
+
+            try:
+                #  left child has 2*n
+                if self.array[index - 1] > self.array[2 * index - 1] < self.array[2 * index]:
+                    next_index = 2 * index
+                    this_action_with_changing = True
+                # right child has 2*n+1
+                elif self.array[index - 1] > self.array[2 * index]:
+                    next_index = 2 * index + 1
+                    this_action_with_changing = True
+            except IndexError:
+                pass
+
+            if this_action_with_changing:
+                self.array[next_index - 1], self.array[index - 1] = self.array[index - 1], self.array[next_index - 1]
+            index = next_index
+
     def check_order_array(self):
         """this method has checked array on order"""
         return self.array == sorted(self.array)
@@ -63,24 +90,18 @@ class Heap:
     def heap_sort(self):
         """this method represents heap sort with creating new ordered array """
         new_heap = []
+        if not self.check_order_heap():
+            for index in range(len(self.array), 0, -1):
+                self.action_up(index)
+        print(self.array)
         # this circle passing each element in array
-        for index in range(len(self.array), 0, -1):
-            # this circle passing on each level in heap
-            for level_index in range(self.get_heap_len(), 0, -1):
-                target_index = 0
-                target_element = pow(2, level_index)
-                # this circle passing thought even elements which allows on target level
-                while target_index < target_element and target_element + target_index <= index:
-                    self.action_up(target_element + target_index)
-                    target_index += 2
-
+        for index in range(0, len(self.array), 1):
             # in this case occurs replacing least element after permutations on first position
             # and last element in array,after this action last element has deleted and added in new array
-            change_element = self.array[index - 1]
-            self.array[index - 1] = self.array[0]
-            self.array[0] = change_element
-            new_heap.append(self.array.pop())
+            self.action_down(1)
 
+            self.array[-1], self.array[0] = self.array[0], self.array[-1]
+            new_heap.append(self.array.pop())
         self.array = new_heap
 
     def get_heap_len(self):
